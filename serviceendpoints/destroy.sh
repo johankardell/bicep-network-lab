@@ -1,0 +1,1 @@
+az group delete --location westeurope --name serviceendpoint-lab
