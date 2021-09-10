@@ -1,0 +1,1 @@
+az deployment sub create --name test --template-file ./storage.bicep --location westeurope --param vnetrg='privateendpoint-lab' --param vnetname='vnet2' --param serverrg='privateendpoint-server-lab'
