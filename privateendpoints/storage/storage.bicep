@@ -1,7 +1,9 @@
 param miid string
 param pesubnetid string
+param serverDeployed bool
+param env string
 
-resource roleassignblob 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
+resource roleassignblob 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = if (serverDeployed) {
   name: '${guid(resourceGroup().name, 'blobowner')}'
   scope: resourceGroup()
   properties: {
@@ -10,7 +12,7 @@ resource roleassignblob 'Microsoft.Authorization/roleAssignments@2020-08-01-prev
   }
 }
 
-resource roleassigncontrib 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
+resource roleassigncontrib 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = if (serverDeployed) {
   name: '${guid(resourceGroup().name, 'contributor')}'
   scope: resourceGroup()
   properties: {
@@ -20,11 +22,11 @@ resource roleassigncontrib 'Microsoft.Authorization/roleAssignments@2020-08-01-p
 }
 
 resource sa 'Microsoft.Storage/storageAccounts@2021-04-01' = {
-  name: 'stajokatest'
+  name: 'stajokatest${env}'
   location: resourceGroup().location
   kind: 'StorageV2'
   sku: {
-    name: 'Standard_LRS'
+    name: env=='prod' ? 'Standard_GRS': 'Standard_LRS'
   }
   properties: {
     supportsHttpsTrafficOnly: true
@@ -42,7 +44,7 @@ resource sa 'Microsoft.Storage/storageAccounts@2021-04-01' = {
 }
 
 resource privateendpoint 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  name: 'pe-sa'
+  name: 'pe-sa-${env}'
   location: resourceGroup().location
   properties: {
     subnet: {
@@ -52,7 +54,7 @@ resource privateendpoint 'Microsoft.Network/privateEndpoints@2020-06-01' = {
       {
         name: 'pe-sa'
         properties: {
-          privateLinkServiceId: sa.id 
+          privateLinkServiceId: sa.id
           groupIds: [
             'blob'
           ]
