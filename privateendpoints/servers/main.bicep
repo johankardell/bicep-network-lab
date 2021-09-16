@@ -16,7 +16,7 @@ resource vnet1 'Microsoft.Network/virtualNetworks@2021-02-01' existing = {
   scope: resourceGroup(vnetrg)
 }
 
-module linuxvm 'servers/linuxvm.bicep' = if(deployServer){
+module linuxvm 'resources/linuxvm.bicep' = if (deployServer) {
   name: 'tux'
   scope: resourceGroup(rg.name)
   params: {
