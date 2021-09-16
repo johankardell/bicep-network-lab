@@ -7,14 +7,18 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   properties: {
     addressSpace: {
       addressPrefixes: [
-        '10.1.0.0/20'
+        '10.1.0.0/16'
+        'fd00:db8:decb::/48'
       ]
     }
     subnets: [
       {
         name: 'servers'
         properties: {
-          addressPrefix: '10.1.0.0/24'
+          addressPrefixes: [
+            '10.1.0.0/24'
+            'fd00:db8:decb::/64'
+          ]
           privateEndpointNetworkPolicies: 'Disabled'
           serviceEndpoints: [
             {
